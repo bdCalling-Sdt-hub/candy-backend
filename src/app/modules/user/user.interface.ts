@@ -4,14 +4,14 @@ export interface TUser {
   [x: string]: any;
   id: string;
   email: string;
-  branch?: ObjectId;
   designation: string;
   password: string;
   phoneNumber?: string;
   name: string;
+  isVerified:boolean
   needsPasswordChange: boolean;
   passwordChangedAt?: Date;
-  role: "admin" | "super_admin" | "user" | "sub_admin";
+  role: "candyGiver"|"children";
   isDeleted: boolean;
   image?: string;
   verification: {

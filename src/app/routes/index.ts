@@ -18,6 +18,10 @@ const moduleRoutes = [
     path: "/otp",
     route: otpRoutes,
   },
+  {
+    path: "/candy",
+    route: otpRoutes,
+  },
 
 ];
 moduleRoutes.forEach((route) => router.use(route.path, route.route));

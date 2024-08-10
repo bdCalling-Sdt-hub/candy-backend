@@ -8,7 +8,6 @@ import { generateOtp } from "../../utils/otpGenerator";
 import { User } from "../user/user.model";
 
 const verifyOtp = async (token: string, otp: string | number) => {
-  console.log(otp, "otp");
   if (!token) {
     throw new AppError(httpStatus.UNAUTHORIZED, "you are not authorized!");
   }
@@ -24,7 +23,8 @@ const verifyOtp = async (token: string, otp: string | number) => {
       "session has expired.please try to submit otp withing 1 minute"
     );
   }
-  const user = await User.findById(decode?.id).select("verification status");
+
+  const user = await User.findById(decode?.id).select("verification isVerified");
   if (!user) {
     throw new AppError(httpStatus.BAD_REQUEST, "user not found");
   }
@@ -42,10 +42,10 @@ const verifyOtp = async (token: string, otp: string | number) => {
     user?._id,
     {
       $set: {
-        status: user?.status === "active" ? user?.status : "active",
+        status: user?.isVerified === false ? true : user?.isVerified,
         verification: {
           otp: 0,
-          expiresAt: moment().add(2, "minute"),
+          expiresAt: moment().add(3, "minute"),
           status: true,
         },
       },
@@ -57,15 +57,13 @@ const verifyOtp = async (token: string, otp: string | number) => {
     id: user?._id,
   };
   const jwtToken = jwt.sign(jwtPayload, config.jwt_access_secret as Secret, {
-    expiresIn: "2m",
+    expiresIn: "3m",
   });
   return { user: updateUser, token: jwtToken };
 };
 
 const resendOtp = async (email: string) => {
-  console.log(email);
   const user = await User.findOne({ email });
-
   if (!user) {
     throw new AppError(httpStatus.BAD_REQUEST, "user not found");
   }

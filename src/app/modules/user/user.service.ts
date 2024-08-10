@@ -10,20 +10,51 @@ import jwt, { Secret } from "jsonwebtoken";
 import { sendEmail } from "../../utils/mailSender";
 import QueryBuilder from "../../builder/QueryBuilder";
 import bcrypt from "bcrypt";
-const insertSubAdminIntoDb = async (
+const inserUserIntoDB = async (
   payload: Partial<TUser>
-): Promise<TUser> => {
+): Promise<TUser | {}> => {
   const user = await User.isUserExist(payload.email as string);
   if (user) {
     throw new AppError(
       httpStatus.FORBIDDEN,
-      "user already exist with this email"
+      "User already exist with this email!"
     );
   }
 
-  const result = await User.create(payload);
+  const otp = generateOtp();
+  const expiresAt = moment().add(3, "minute");
+  const formatedData = {
+    ...payload,
+    verification: {
+      otp,
+      expiresAt,
+    },
+  };
 
-  return result;
+  const result = await User.create(formatedData);
+  const jwtPayload = {
+    email: payload?.email,
+    id: result?._id,
+  };
+  const token = jwt.sign(jwtPayload, config.jwt_access_secret as Secret, {
+    expiresIn: "3m",
+  });
+  await sendEmail(
+    payload?.email!,
+    "Your OTP Code",
+    `
+      <div style="font-family: Arial, sans-serif; color: #333;">
+        <h2 style="color: #007BFF;">Your OTP Code</h2>
+        <p style="font-size: 16px; margin-bottom: 20px;">Please use the following OTP to proceed:</p>
+        <div style="font-size: 24px; font-weight: bold; margin-bottom: 20px; color: #000;">
+          ${otp}
+        </div>
+        <p style="font-size: 14px; color: #555;">This code is valid until: <strong>${expiresAt.toLocaleString()}</strong></p>
+        <p style="font-size: 14px; color: #555;">If you did not request this code, please ignore this email.</p>
+      </div>
+    `
+  );
+  return {token};
 };
 
 const getme = async (id: string): Promise<TUser | null> => {
@@ -103,7 +134,7 @@ const deleteAccount = async (id: string, password: string) => {
 };
 
 export const userServices = {
-  insertSubAdminIntoDb,
+ inserUserIntoDB,
   getme,
   updateProfile,
   getAllusers,

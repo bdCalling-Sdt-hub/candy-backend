@@ -2,6 +2,7 @@ import mongoose, { Schema, model } from "mongoose";
 import { TUser, UserModel } from "./user.interface";
 import config from "../../config";
 import bcrypt from "bcrypt";
+
 const userSchema = new Schema<TUser, UserModel>(
   {
     name: {
@@ -21,25 +22,18 @@ const userSchema = new Schema<TUser, UserModel>(
       required: true,
       select: 0,
     },
-    designation: {
+    role: {
       type: String,
       required: true,
+      enum:["candyGiver","children"]
     },
-
     passwordChangedAt: {
       type: Date,
     },
-    branch: {
-      type: mongoose.Types.ObjectId,
-      ref: "Branch",
-    },
+
     needsPasswordChange: {
       type: Boolean,
       default: false,
-    },
-    role: {
-      type: String,
-      enum: ["super_admin", "admin", "user", "sub_admin"],
     },
     isDeleted: {
       type: Boolean,
@@ -47,6 +41,10 @@ const userSchema = new Schema<TUser, UserModel>(
     },
     phoneNumber: {
       type: String,
+    },
+    isVerified:{
+      type: Boolean,
+      default: false,
     },
     verification: {
       otp: {

@@ -8,11 +8,11 @@ const insertuserIntoDb = catchAsync(async (req: Request, res: Response) => {
   if (req?.file) {
     req.body.image = storeFile("profile", req?.file?.filename);
   }
-  const result = await userServices.insertSubAdminIntoDb(req.body);
+  const result = await userServices.inserUserIntoDB(req.body);
   sendResponse(res, {
     statusCode: 200,
     success: true,
-    message: "User created successfully",
+    message: "An otp sent to your email.",
     data: result,
   });
 });

@@ -5,6 +5,7 @@ import { USER_ROLE } from "../user/user.constant";
 import validateRequest from "../../middleware/validateRequest";
 import { authValidation } from "./auth.validation";
 
+
 const router = Router();
 
 router.post("/login", authControllers.login);
@@ -15,7 +16,7 @@ router.post(
 );
 router.patch(
   "/change-password",
-  auth(USER_ROLE.sub_admin, USER_ROLE.super_admin),
+  auth(USER_ROLE.candyGiver,USER_ROLE.admin),
   authControllers.changePassword
 );
 router.patch("/forgot-password", authControllers.forgotPassword);

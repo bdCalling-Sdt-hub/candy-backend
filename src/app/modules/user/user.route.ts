@@ -7,8 +7,7 @@ import parseData from "../../middleware/parseData";
 const upload = fileUpload("./public/uploads/profile/");
 const router = Router();
 router.post(
-  "/create-user",
-  auth(USER_ROLE.super_admin),
+  "/signup",
   upload.single("file"),
   parseData(),
   userControllers.insertuserIntoDb
