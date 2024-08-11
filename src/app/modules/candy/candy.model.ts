@@ -1,5 +1,8 @@
 import { model, Schema } from "mongoose";
-import { TAddress, TCandy } from "./candy.interface";
+import { TAddress, TCandy, TCandyModel } from "./candy.interface";
+import AppError from "../../error/AppError";
+import httpStatus from "http-status";
+import moment from "moment";
 
 const addressSchema = new Schema<TAddress>(
   {
@@ -28,7 +31,7 @@ const addressSchema = new Schema<TAddress>(
     timestamps: true,
   }
 );
-const CandySchema = new Schema<TCandy>(
+const CandySchema = new Schema<TCandy,TCandyModel>(
   {
     user: {
       type: Schema.Types.ObjectId,
@@ -50,6 +53,7 @@ const CandySchema = new Schema<TCandy>(
   }
 );
 
+
 // filter out deleted documents
 CandySchema.pre("find", function (next) {
   this.find({ isDeleted: { $ne: true } });
@@ -66,4 +70,9 @@ CandySchema.pre("aggregate", function (next) {
   next();
 });
 
-export const Candy = model<TCandy>("Candy", CandySchema);
+
+
+CandySchema.statics.isCandyExistWithSameDate = async function (userId: string,date:string) {
+  return await Candy.findOne({ user:userId,date:moment(date).format("YYYY-MM-DD") });
+};
+export const Candy = model<TCandy,TCandyModel>("Candy", CandySchema);

@@ -25,7 +25,7 @@ const userSchema = new Schema<TUser, UserModel>(
     role: {
       type: String,
       required: true,
-      enum:["candyGiver","children"]
+      enum: ["candyGiver", "children"],
     },
     passwordChangedAt: {
       type: Date,
@@ -42,7 +42,7 @@ const userSchema = new Schema<TUser, UserModel>(
     phoneNumber: {
       type: String,
     },
-    isVerified:{
+    isVerified: {
       type: Boolean,
       default: false,
     },

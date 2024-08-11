@@ -3,6 +3,7 @@ import { authRoutes } from "../modules/auth/auth.route";
 
 import { otpRoutes } from "../modules/otp/otp.routes";
 import { userRoutes } from "../modules/user/user.route";
+import { candyRoutes } from "../modules/candy/candy.route";
 
 const router = Router();
 const moduleRoutes = [
@@ -20,9 +21,8 @@ const moduleRoutes = [
   },
   {
     path: "/candy",
-    route: otpRoutes,
+    route: candyRoutes,
   },
-
 ];
 moduleRoutes.forEach((route) => router.use(route.path, route.route));
 
