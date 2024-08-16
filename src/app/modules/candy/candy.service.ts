@@ -1,22 +1,20 @@
-import httpStatus from "http-status";
-import AppError from "../../error/AppError";
+import { PipelineStage } from "mongoose";
 import { TCandy } from "./candy.interface";
 import { Candy } from "./candy.model";
-import { PipelineStage } from "mongoose";
 
 const insertCandyAddressIntoDb = async (userId: string, payload: TCandy) => {
   // check same user in same date
-  const iscandyExistWithSameDate = await Candy.isCandyExistWithSameDate(
-    userId,
-    payload.date
-  );
+  // const iscandyExistWithSameDate = await Candy.isCandyExistWithSameDate(
+  //   userId,
+  //   payload.date
+  // );
 
-  if (iscandyExistWithSameDate) {
-    throw new AppError(
-      httpStatus.CONFLICT,
-      "Candy already exist with same date"
-    );
-  }
+  // if (iscandyExistWithSameDate) {
+  //   throw new AppError(
+  //     httpStatus.CONFLICT,
+  //     "Candy already exist with same date"
+  //   );
+  // }
 
   // format data
   const formatData = {
@@ -61,7 +59,11 @@ const getAllCandyAddress = async (query: Partial<TCandy>) => {
       as: "user",
     },
   });
-
+  pipeline.push({
+    $match: {
+      isDeleted: false,
+    },
+  });
   pipeline.push({
     $unwind: "$user",
   });
@@ -81,6 +83,11 @@ const getAllCandyAddress = async (query: Partial<TCandy>) => {
   return result;
 };
 
+const getMyCandyAddress = async (id: string) => {
+  const result = await Candy.find({ user: id });
+  return result;
+};
+
 const updateCandyAddress = async (id: string, payload: Partial<TCandy>) => {
   const result = await Candy.findByIdAndUpdate(id, payload, { new: true });
   return result;
@@ -96,4 +103,5 @@ export const candyServices = {
   getAllCandyAddress,
   updateCandyAddress,
   deleteCandyAddress,
+  getMyCandyAddress,
 };

@@ -1,6 +1,6 @@
+import { Request, Response } from "express";
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
-import { Request, Response } from "express";
 import { candyServices } from "./candy.service";
 const insertCandyAddressIntoDb = catchAsync(
   async (req: Request, res: Response) => {
@@ -19,6 +19,15 @@ const insertCandyAddressIntoDb = catchAsync(
 
 const getAllCandyAddress = catchAsync(async (req: Request, res: Response) => {
   const result = await candyServices.getAllCandyAddress(req.query);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Candy address retrived successfully.",
+    data: result,
+  });
+});
+const getMyCandyAddress = catchAsync(async (req: Request, res: Response) => {
+  const result = await candyServices.getMyCandyAddress(req.user.userId);
   sendResponse(res, {
     statusCode: 200,
     success: true,
@@ -53,4 +62,5 @@ export const candyControllers = {
   getAllCandyAddress,
   updateCandyAddress,
   deleteCandyAddress,
+  getMyCandyAddress,
 };
