@@ -82,7 +82,7 @@ CandySchema.statics.isCandyExistWithSameDate = async function (
 ) {
   return await Candy.findOne({
     user: userId,
-    date: moment(date).format("YYYY-MM-DD"),
+    date: moment(date).format("MM-DD-YYYY"),
   });
 };
 export const Candy = model<TCandy, TCandyModel>("Candy", CandySchema);

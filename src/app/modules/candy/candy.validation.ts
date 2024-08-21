@@ -17,12 +17,17 @@ const candySchema = z.object({
     }),
     date: z
       .string()
-      .regex(/^\d{4}-\d{2}-\d{2}$/, "Date must be in the format yyyy-mm-dd")
+      .regex(/^\d{2}-\d{2}-\d{4}$/, "Date must be in the format MM-DD-YYYY") // Updated regex for MM-DD-YYYY format
       .refine((val) => {
-        const parsedDate = new Date(val);
+        const [month, day, year] = val.split("-");
+        const parsedDate = new Date(`${year}-${month}-${day}`);
         return (
           !isNaN(parsedDate.getTime()) &&
-          val === parsedDate.toISOString().slice(0, 10)
+          val ===
+            `${String(month).padStart(2, "0")}-${String(day).padStart(
+              2,
+              "0"
+            )}-${year}`
         );
       }, "Invalid date format or not a valid date"),
   }),
