@@ -73,6 +73,7 @@ const getAllCandyAddress = async (query: Partial<TCandy>) => {
       address: 1,
       location: 1,
       date: 1,
+      status: 1,
       "user.email": 1,
       "user.image": 1,
       "user.name": 1,

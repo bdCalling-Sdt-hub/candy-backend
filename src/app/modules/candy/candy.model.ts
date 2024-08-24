@@ -1,34 +1,7 @@
 import moment from "moment";
 import { model, Schema } from "mongoose";
-import { TAddress, TCandy, TCandyModel } from "./candy.interface";
+import { TCandy, TCandyModel } from "./candy.interface";
 
-const addressSchema = new Schema<TAddress>(
-  {
-    country: {
-      type: String,
-      required: true,
-    },
-    state: {
-      type: String,
-      required: true,
-    },
-    streetAddress: {
-      type: String,
-      required: true,
-    },
-    city: {
-      type: String,
-      required: true,
-    },
-    zipCode: {
-      type: String,
-      required: true,
-    },
-  },
-  {
-    timestamps: true,
-  }
-);
 const CandySchema = new Schema<TCandy, TCandyModel>(
   {
     user: {
@@ -36,7 +9,10 @@ const CandySchema = new Schema<TCandy, TCandyModel>(
       ref: "User",
       required: true,
     },
-    address: addressSchema,
+    address: {
+      type: String,
+      required: true,
+    },
     location: {
       coordinates: [Number],
       type: { type: String, default: "Point" },

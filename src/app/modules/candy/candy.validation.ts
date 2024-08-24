@@ -10,7 +10,7 @@ const addressSchema = z.object({
 
 const candySchema = z.object({
   body: z.object({
-    address: addressSchema,
+    address: z.string({ required_error: "address is required" }),
     location: z.object({
       type: z.literal("Point"),
       coordinates: z.tuple([z.number(), z.number()]), // [longitude, latitude]
